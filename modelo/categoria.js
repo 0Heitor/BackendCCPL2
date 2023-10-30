@@ -1,4 +1,4 @@
-class Categoria{
+export default class Categoria{
     #codigo
     #descricao
 
@@ -24,6 +24,10 @@ class Categoria{
     }
 
     //override de método toJSON
-    
-
+    toJSON(){
+        return{
+            codigo:this.#codigo,
+            descricao:this.#descricao
+        }
+    }
 }
