@@ -84,4 +84,21 @@ export default class Produto{
             categoria:this.#categoria
         }
     }
+
+    //camada de modelo acessa a camada de persistencia
+    async gravar(){
+
+    }
+
+    async excluir(){
+
+    }
+
+    async alterar(){
+
+    }
+
+    async consultar(){
+
+    }
 }

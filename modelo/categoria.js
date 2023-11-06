@@ -1,3 +1,5 @@
+import CategoriaDAO from "../persistencia/categoriaDAO.js";
+
 export default class Categoria{
     #codigo
     #descricao
@@ -30,4 +32,25 @@ export default class Categoria{
             descricao:this.#descricao
         }
     }
+
+    //camada de modelo acessa a camada de persistencia
+    async gravar(){
+        const catDAO = new CategoriaDAO();
+        await catDAO.gravar(this);
+    }
+
+    async excluir(){
+        const catDAO = new CategoriaDAO();
+        await catDAO.excluir(this);
+    }
+
+    async alterar(){
+        const catDAO = new CategoriaDAO();
+        await catDAO.alterar(this);
+    }
+
+    async consultar(parametro){
+        const catDAO = new CategoriaDAO();
+        return await catDAO.consultar(parametro);
+    }   
 }
