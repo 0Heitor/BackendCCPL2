@@ -1,4 +1,5 @@
 import Categoria from '../modelo/categoria';
+import conectar from "./conexao.js";
 
 export default class CategoriaDAO{
     async gravar(categoria){
@@ -6,7 +7,7 @@ export default class CategoriaDAO{
             const sql = "INSERT INTO categoria (cat_descricao) VALUES(?)";
             const parametros = [categoria.descricao];
             const conexao = await conectar();
-            const retorno = conexao.execute(sql, parametros);
+            const retorno = await conexao.execute(sql, parametros);
             categoria.id = retorno[0].insertId;
             global.poolConexoes.realeaseConnection(conexao);
         }
@@ -14,7 +15,7 @@ export default class CategoriaDAO{
 
     async atualizar(categoria){
         if(categoria instanceof Categoria){
-            const sql = "UPDATE categoria set cat_descricao = ? where cat_codigo = ?";
+            const sql = "UPDATE categoria set cat_descricao = ? WHERE cat_codigo = ?";
             const parametros = [categoria.descricao, categoria.codigo];
             const conexao = await conectar();
             await conexao.execute(sql, parametros);
@@ -33,24 +34,27 @@ export default class CategoriaDAO{
     }
 
     async consultar(parametroConsulta){
-        let sql = '';
-        let parametros = '';
-        if(!isNaN(parseInt(parametroConsulta))){
-            sql = "SELECT * FROM categoria WHERE cad_codigo = ?";
+        let sql='';
+        let parametros=[];
+        if (!isNaN(parseInt(parametroConsulta))){
+            sql='SELECT * FROM categoria WHERE cat_codigo = ? order by cat_descricao';
             parametros = [parametroConsulta];
-            
         }
         else{
-
+            if(!parametroConsulta)
+                parametroConsulta = '';
+            else{
+                sql = "SELECT * FROM categoria WHERE cat_descricao like ?";
+                parametros = ['%'+parametroConsulta+'%'];
+            }
         }
         const conexao = await conectar();
-        const [registros, campos] = await conexao.execute(sql, parametros);
+        const [registros, campos] = await conexao.execute(sql,parametros);
         let listaCategorias = [];
-        for(const registro of registros){
-            const categoria = new Categoria(registro.cad_codigo, registro.cad_descricao);
+        for (const registro of registros){
+            const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
             listaCategorias.push(categoria);
         }
-        global.poolConexoes.realeaseConnection(conexao);
         return listaCategorias;
     }
 }

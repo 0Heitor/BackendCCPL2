@@ -1,3 +1,5 @@
+import ProdutoDAO from '../persistencia/produtoDAO';
+
 export default class Produto{
     #codigo;
     #descricao;
@@ -86,19 +88,23 @@ export default class Produto{
     }
 
     //camada de modelo acessa a camada de persistencia
-    async gravar(){
-
+     async gravar(){
+        const proDAO = new ProdutoDAO();
+        await proDAO.gravar(this);
     }
 
     async excluir(){
-
+        const proDAO = new ProdutoDAO();
+        await proDAO.excluir(this);
     }
 
     async alterar(){
-
+        const proDAO = new ProdutoDAO();
+        await proDAO.alterar(this);
     }
 
-    async consultar(){
-
+    async consultar(parametro){
+        const proDAO = new ProdutoDAO();
+        return await proDAO.consultar(parametro);
     }
 }
