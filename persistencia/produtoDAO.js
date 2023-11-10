@@ -9,7 +9,7 @@ export default class ProdutoDAO{
             const parametros = [produto.descricao, produto.precoCusto, produto.precoVenda, produto.dataValidade, produto.qtdEstoque, produto.categoria.codigo];
             const conexao = await conectar();
             const retorno = await conexao.execute(sql, parametros);
-            categoria.id = retorno[0].insertId;
+            produto.codigo = retorno[0].insertId;
             global.poolConexoes.realeaseConnection(conexao);
         }
     }
@@ -53,10 +53,13 @@ export default class ProdutoDAO{
         const [registros, campos] = await conexao.execute(sql,parametros);
         let listaProdutos = [];
         for (const registro of registros){
-            const categoria = new Categoria();
+            /*const categoria = new Categoria();
             let listaC =  categoria.consultar(registro.cat_codigo);
             const produto = new Produto(registro.prod_codigo, registro.prod_descricao, registro.prod_precoCusto, registro.prod_precoVenda,
-                                        registro.prod_dataValidade, registro.prod_qtdEstoque, listaC[0]);
+                                        registro.prod_dataValidade, registro.prod_qtdEstoque, listaC[0]);*/
+            const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
+            const produto = new Produto(registro.prod_codigo, registro.prod_descricao, registro.prod_precoCusto, registro.prod_precoVenda,
+                                        registro.prod_dataValidade, registro.prod_qtdEstoque, categoria);
             listaProdutos.push(produto);
         }
         return listaProdutos;
