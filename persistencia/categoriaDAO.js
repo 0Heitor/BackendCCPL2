@@ -1,4 +1,4 @@
-import Categoria from '../modelo/categoria';
+import Categoria from '../modelo/categoria.js';
 import conectar from "./conexao.js";
 
 export default class CategoriaDAO{
@@ -9,7 +9,7 @@ export default class CategoriaDAO{
             const conexao = await conectar();
             const retorno = await conexao.execute(sql, parametros);
             categoria.codigo = retorno[0].insertId;
-            global.poolConexoes.realeaseConnection(conexao);
+            global.poolConexoes.releaseConnection(conexao);
         }
     }
 
@@ -19,7 +19,7 @@ export default class CategoriaDAO{
             const parametros = [categoria.descricao, categoria.codigo];
             const conexao = await conectar();
             await conexao.execute(sql, parametros);
-            global.poolConexoes.realeaseConnection(conexao);
+            global.poolConexoes.releaseConnection(conexao);
         }
     }
 
@@ -29,7 +29,7 @@ export default class CategoriaDAO{
             const parametros = [categoria.codigo];
             const conexao = await conectar();
             await conexao.execute(sql, parametros);
-            global.poolConexoes.realeaseConnection(conexao);
+            global.poolConexoes.releaseConnection(conexao);
         }
     }
 
@@ -55,6 +55,7 @@ export default class CategoriaDAO{
             const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
             listaCategorias.push(categoria);
         }
+        global.poolConexoes.releaseConnection(conexao);
         return listaCategorias;
     }
 }

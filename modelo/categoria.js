@@ -46,7 +46,7 @@ export default class Categoria{
 
     async alterar(){
         const catDAO = new CategoriaDAO();
-        await catDAO.alterar(this);
+        await catDAO.atualizar(this);
     }
 
     async consultar(parametro){

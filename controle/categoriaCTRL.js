@@ -4,19 +4,19 @@ export default class CategoriaCTRL{
     
     gravar(requisicao, resposta){
         resposta.type("application/json");
-        if(requisicao.method === "POST" && resposta.is('application/json')){
+        if(requisicao.method === "POST" && requisicao.is('application/json')){
             const dados = requisicao.body;
             const descricao = dados.descricao;
             if(descricao){
                 const categoria = new Categoria(0,descricao);
                 categoria.gravar().then(()=>{
-                    resposta(200).json({
+                    resposta.status(200).json({
                         "status":true,
                         "codigoGerado":categoria.codigo,
                         "mensagem":"Categoria incluída com sucesso !"
                     })
                 }).catch((erro) => {
-                    resposta(500).json({
+                    resposta.status(500).json({
                         "status":false,
                         "mensagem":"Erro ao registrar a categoria: "+erro.message
                     })
@@ -39,21 +39,21 @@ export default class CategoriaCTRL{
 
     alterar(requisicao, resposta){
         resposta.type("application/json");
-        if((requisicao.method === "PUT" || requisicao.method === "PATCH") && resposta.is('application/json')){
+        if((requisicao.method === "PUT" || requisicao.method === "PATCH") && requisicao.is('application/json')){
             const dados = requisicao.body;
             const descricao = dados.descricao;
             const codigo = dados.codigo;
             if(codigo && descricao){
-                const categoria = new Categoria(codigo ,descricao);
+                const categoria = new Categoria(codigo, descricao);
                 categoria.alterar().then(()=>{
-                    resposta(200).json({
+                    resposta.status(200).json({
                         "status":true,
                         "mensagem":"Categoria alterada com sucesso !"
                     })
                 }).catch((erro) => {
-                    resposta(500).json({
+                    resposta.status(500).json({
                         "status":false,
-                        "mensagem":"Erro ao registrar a categoria: "+erro.message
+                        "mensagem":"Erro ao alterar a categoria: "+erro.message
                     })
                 });
             }
@@ -74,18 +74,18 @@ export default class CategoriaCTRL{
 
     excluir(requisicao, resposta){
         resposta.type("application/json");
-        if(requisicao.method === "DELETE" && resposta.is('application/json')){
+        if(requisicao.method === "DELETE" && requisicao.is('application/json')){
             const dados = requisicao.body;
             const codigo = dados.codigo;
             if(codigo){
                 const categoria = new Categoria(codigo, "");
                 categoria.excluir().then(()=>{
-                    resposta(200).json({
+                    resposta.status(200).json({
                         "status":true,
                         "mensagem":"Categoria deletado com sucesso !"
                     })
                 }).catch((erro) => {
-                    resposta(500).json({
+                    resposta.status(500).json({
                         "status":false,
                         "mensagem":"Erro ao deletar a categoria: "+erro.message
                     })
@@ -94,7 +94,7 @@ export default class CategoriaCTRL{
             else{
                 resposta.status(400).json({
                     "status":false,
-                    "mensagem":"Por favor informe a descrição da categoria"
+                    "mensagem":"Por favor informe o codigo da categoria"
                 });
             }  
         }
@@ -108,19 +108,20 @@ export default class CategoriaCTRL{
 
     consultar(requisicao, resposta){
         resposta.type("application/json");
-        if(requisicao.method === "GET" && resposta.is('application/json')){
+        if(requisicao.method === "GET" && requisicao.is('application/json')){
             const dados = requisicao.body;
             const descricao = dados.descricao;
             const codigo = dados.codigo;
             if(descricao){
                 const categoria = new Categoria(0,descricao);
-                categoria.consultar(descricao).then(()=>{
-                    resposta(200).json({
+                categoria.consultar(descricao).then((listaCategoria)=>{
+                    resposta.status(200).json({
+                        listaCategoria,
                         "status":true,
                         "mensagem":"Categoria consultado com sucesso !"
                     })
                 }).catch((erro) => {
-                    resposta(500).json({
+                    resposta.status(500).json({
                         "status":false,
                         "mensagem":"Erro ao consultar a categoria: "+erro.message
                     })
@@ -129,13 +130,14 @@ export default class CategoriaCTRL{
             else
             if(codigo){
                 const categoria = new Categoria(codigo,"");
-                categoria.consultar(codigo).then(()=>{
-                    resposta(200).json({
+                categoria.consultar(codigo).then((listaCategoria)=>{
+                    resposta.status(200).json({
+                        listaCategoria,
                         "status":true,
                         "mensagem":"Categoria consultado com sucesso !"
                     })
                 }).catch((erro) => {
-                    resposta(500).json({
+                    resposta.status(500).json({
                         "status":false,
                         "mensagem":"Erro ao consultar a categoria: "+erro.message
                     })
