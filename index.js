@@ -1,5 +1,3 @@
-/*import Produto from './modelo/produto.js';
-import Categoria from './modelo/categoria.js';*/
 import express from "express";
 import rotaProduto from "./Rotas/rotaProduto.js";
 import rotaCategoria from "./Rotas/rotaCategoria.js";

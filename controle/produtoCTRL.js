@@ -13,7 +13,7 @@ export default class ProdutoCTRL{
             const dataValidade = dados.dataValidade;
             const qtdEstoque = dados.qtdEstoque;
             const categoria = dados.categoria;
-            if(descricao && precoCusto && precoVenda && dataValidade && qtdEstoque && categoria){
+            if(descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && categoria){
                 const produto = new Produto(0,descricao,precoCusto,precoVenda,dataValidade,qtdEstoque,categoria);
                 produto.gravar().then(()=>{
                     resposta.status(200).json({
@@ -31,7 +31,7 @@ export default class ProdutoCTRL{
             else{
                 resposta.status(400).json({
                     "status":false,
-                    "mensagem":"Por favor informe as informações(descricao, preços de Custo e Venda, Data da Validade, quantidade do estoque, e o Objeto da categoria) do produto"
+                    "mensagem":"Por favor informe as informações(descricao, preços de Custo e Venda, Data da Validade, quantidade do estoque, e o Objeto da categoria(codigo e descrição)) do produto"
                 });
             }  
         }
@@ -54,7 +54,7 @@ export default class ProdutoCTRL{
             const dataValidade = dados.dataValidade;
             const qtdEstoque = dados.qtdEstoque;
             const categoria = dados.categoria;
-            if(codigo && descricao && precoCusto && precoVenda && dataValidade && qtdEstoque && categoria){
+            if(codigo && descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && categoria){
                 const produto = new Produto(codigo,descricao,precoCusto,precoVenda,dataValidade,qtdEstoque,categoria);
                 produto.alterar().then(()=>{
                     resposta.status(200).json({
@@ -71,7 +71,7 @@ export default class ProdutoCTRL{
             else{
                 resposta.status(400).json({
                     "status":false,
-                    "mensagem":"Por favor informe as informações(codigo, descricao, preços de Custo e Venda, Data da Validade, quantidade do estoque, e o Objeto da categoria) do produto"
+                    "mensagem":"Por favor informe as informações(codigo, descricao, preços de Custo e Venda, Data da Validade, quantidade do estoque, e o Objeto da categoria(codigo e descrição)) do produto"
                 });
             }  
         }
@@ -120,51 +120,21 @@ export default class ProdutoCTRL{
     consultar(requisicao, resposta){
         resposta.type("application/json");
         if(requisicao.method === "GET" && requisicao.is('application/json')){
-            const dados = requisicao.body;
-            const descricao = dados.descricao;
-            const codigo = dados.codigo;
-            if(descricao){
-                const produto = new Produto(0,descricao,0,0,"",0,{});
-                produto.consultar(descricao).then((listaProdutos)=>{
-                    resposta.status(200).json({
-                        listaProdutos,
-                        "status":true,
-                        "mensagem":"Produto consultado com sucesso !"
-                    })
-                }).catch((erro) => {
-                    resposta.status(500).json({
-                        "status":false,
-                        "mensagem":"Erro ao consultar o produto: "+erro.message
-                    })
-                });
-            }
-            else
-            if(codigo){
-                const produto = new Produto(codigo,"",0,0,"",0,{});
-                produto.consultar(codigo).then((listaProdutos)=>{
-                    resposta.status(200).json({
-                        listaProdutos,
-                        "status":true,
-                        "mensagem":"Produto consultado com sucesso !"
-                    })
-                }).catch((erro) => {
-                    resposta.status(500).json({
-                        "status":false,
-                        "mensagem":"Erro ao consultar o produto: "+erro.message
-                    })
-                });
-            }
-            else{
-                resposta.status(400).json({
+            const termo = requisicao.params.termo;
+            if(!termo)
+                termo = "";
+            const produto = new Produto();
+            produto.consultar(termo).then((listaCategorias) => {
+                resposta.status(200).json({
+                    listaCategorias,
+                    "status":true,
+                    "mensagem":"Produto consultado com sucesso !"
+                })
+            }).catch((erro) => {
+                resposta.status(500).json({
                     "status":false,
-                    "mensagem":"Por favor informe a descrição ou o codigo do produto"
-                });
-            }  
-        }
-        else{
-            resposta.status(400).json({
-                "status":false,
-                "mensagem":"Por favor informe o metodo DELETE para deletar um produto !"
+                    "mensagem":"Erro ao consultar o produto: "+erro.message
+                })
             });
         }
     }

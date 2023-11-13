@@ -41,12 +41,11 @@ export default class CategoriaDAO{
             parametros = [parametroConsulta];
         }
         else{
-            if(!parametroConsulta)
+            if(!parametroConsulta){
                 parametroConsulta = '';
-            else{
-                sql = "SELECT * FROM categoria WHERE cat_descricao like ?";
-                parametros = ['%'+parametroConsulta+'%'];
             }
+            sql = "SELECT * FROM categoria WHERE cat_descricao like ?";
+            parametros = ['%'+parametroConsulta+'%'];
         }
         const conexao = await conectar();
         const [registros, campos] = await conexao.execute(sql,parametros);
