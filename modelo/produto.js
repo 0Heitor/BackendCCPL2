@@ -86,7 +86,7 @@ export default class Produto{
         }
     }
 
-     //camada de modelo acessa a camada de persistencia
+    //camada de modelo acessa a camada de persistencia
     async gravar(){
         const prodDAO = new ProdutoDAO();
         await prodDAO.gravar(this);

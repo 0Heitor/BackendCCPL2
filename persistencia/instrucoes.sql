@@ -19,3 +19,31 @@ CREATE TABLE produto(
     CONSTRAINT pk_produto PRIMARY KEY(prod_codigo),
     CONSTRAINT fk_categoria FOREIGN KEY(cat_codigo) REFERENCES categoria(cat_codigo)
 );
+
+CREATE TABLE cliente(
+    cli_codigo INT NOT NULL AUTO_INCREMENT,
+    cli_cpf VARCHAR(14) NOT NULL,
+    cli_nome VARCHAR(100) NOT NULL,
+    cli_endereco VARCHAR(100) NOT NULL,
+    cli_numero INT NOT NULL,
+    cli_bairro VARCHAR(100) NOT NULL,
+    cli_cidade VARCHAR(100) NOT NULL,
+    cli_uf VARCHAR(2) NOT NULL,
+    cli_cep VARCHAR(20) NOT NULL,
+    CONSTRAINT cli_cliente PRIMARY KEY(cli_codigo)
+);
+
+CREATE TABLE fornecedor(
+    forn_codigo INT NOT NULL AUTO_INCREMENT,
+    forn_nome VARCHAR(100) NOT NULL,
+    forn_cnpj VARCHAR(100) NOT NULL,
+    forn_cidade VARCHAR(100) NOT NULL,
+    forn_uf VARCHAR(2) NOT NULL,
+    forn_endereco VARCHAR(100) NOT NULL,
+    forn_numero INT NOT NULL,
+    forn_cpf VARCHAR(14) NOT NULL,
+    forn_rg VARCHAR(100) NOT NULL,
+    forn_email VARCHAR(100) NOT NULL,
+    forn_telefone VARCHAR(100) NOT NULL,
+    CONSTRAINT pk_fornecedor PRIMARY KEY(forn_codigo)
+);
