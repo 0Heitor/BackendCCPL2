@@ -120,22 +120,65 @@ export default class ProdutoCTRL{
     consultar(requisicao, resposta){
         resposta.type("application/json");
         if(requisicao.method === "GET" && requisicao.is('application/json')){
-            const termo = requisicao.params.termo;
-            if(!termo)
-                termo = "";
-            const produto = new Produto();
-            produto.consultar(termo).then((listaCategorias) => {
-                resposta.status(200).json({
-                    listaCategorias,
-                    "status":true,
-                    "mensagem":"Produto consultado com sucesso !"
-                })
-            }).catch((erro) => {
-                resposta.status(500).json({
+            const dados = requisicao.body;
+            const termo = dados.descricao;
+            if(termo){
+                const produto = new Produto();
+                produto.consultar(termo).then((listaProdutos) => {
+                    resposta.status(200).json({
+                        listaProdutos,
+                        "status":true,
+                        "mensagem":"Produto consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um produto: "+erro.message
+                    })
+                });
+            }
+            else{
+                resposta.status(400).json({
                     "status":false,
-                    "mensagem":"Erro ao consultar o produto: "+erro.message
-                })
-            });
+                    "mensagem":"Por favor informe a descricao do produto"
+                });
+            }
+        }
+        else
+        if(requisicao.method === "GET"){
+            let termo = requisicao.params.termo;
+            if(!termo){
+                termo = "";
+                const produto = new Produto();
+                produto.consultar(termo).then((listaProdutos) => {
+                    resposta.status(200).json({
+                        listaProdutos,
+                        "status":true,
+                        "mensagem":"Produto consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um produto: "+erro.message
+                    })
+                });
+            }
+            else
+            if(Number(!isNaN(termo))){
+                const produto = new Produto();
+                produto.consultar(termo).then((listaProdutos) => {
+                    resposta.status(200).json({
+                        listaProdutos,
+                        "status":true,
+                        "mensagem":"Produto consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um produto: "+erro.message
+                    })
+                });
+            }
         }
     }
 }

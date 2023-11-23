@@ -107,8 +107,34 @@ export default class CategoriaCTRL{
     }
 
     consultar(requisicao, resposta){
-        //resposta.type("application/json");
-        if(requisicao.method === "GET" /*&& requisicao.is('application/json')*/){
+        resposta.type("application/json");
+        if(requisicao.method === "GET" && requisicao.is('application/json')){
+            const dados = requisicao.body;
+            const termo = dados.descricao;
+            if(termo){
+                const categoria = new Categoria();
+                categoria.consultar(termo).then((listaCategorias) => {
+                    resposta.status(200).json({
+                        listaCategorias,
+                        "status":true,
+                        "mensagem":"Categoria consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar a categoria: "+erro.message
+                    })
+                });
+            }
+            else{
+                resposta.status(400).json({
+                    "status":false,
+                    "mensagem":"Por favor informe a descricao da Categoria"
+                });
+            }
+        }
+        else
+        if(requisicao.method === "GET"){
             let termo = requisicao.params.termo;
             if(!termo){
                 termo = "";
@@ -141,33 +167,6 @@ export default class CategoriaCTRL{
                         "mensagem":"Erro ao consultar a categoria: "+erro.message
                     })
                 });
-            }
-            else
-            if(isNaN(termo)){
-                resposta.type("application/json");
-                if(requisicao.is('application/json')){
-                    const dados = requisicao.body;
-                    termo = dados.descricao;
-                    const categoria = new Categoria();
-                    categoria.consultar(termo).then((listaCategorias) => {
-                        resposta.status(200).json({
-                            listaCategorias,
-                            "status":true,
-                            "mensagem":"Categoria consultado com sucesso !"
-                        })
-                    }).catch((erro) => {
-                        resposta.status(500).json({
-                            "status":false,
-                            "mensagem":"Erro ao consultar a categoria: "+erro.message
-                        })
-                    });
-                }
-                else{
-                    resposta.status(400).json({
-                        "status":false,
-                        "mensagem":"Por favor mandar formato JSON para consultar uma categoria !"
-                    });
-                }
             }
         }
     }

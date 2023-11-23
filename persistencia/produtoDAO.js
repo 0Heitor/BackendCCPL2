@@ -35,87 +35,46 @@ export default class ProdutoDAO{
         }
     }
 
-    /*async consultar(parametroConsulta){
+    async consultar(termo) {
         let sql='';
         let parametros=[];
-        if (!isNaN(parseInt(parametroConsulta))){
-            sql='SELECT * FROM produto WHERE prod_codigo = ? order by prod_descricao';
-            parametros = [parametroConsulta];
+        if (!isNaN(parseInt(termo))){
+            sql=`SELECT p.prod_codigo, p.prod_descricao,
+            p.prod_precoCusto, p.prod_precoVenda, p.prod_dataValidade, 
+            p.prod_qtdEstoque,
+            c.cat_codigo, c.cat_descricao
+            FROM produto p INNER JOIN categoria c ON p.cat_codigo = c.cat_codigo
+            WHERE p.prod_codigo = ?
+            ORDER BY p.prod_descricao               
+            `;
+            parametros = [termo];
         }
         else{
-            if(!parametroConsulta)
-                parametroConsulta = '';
-            else{
-                sql = "SELECT * FROM produto WHERE prod_descricao like ?";
-                parametros = ['%'+parametroConsulta+'%'];
+            if(!termo){
+                termo = '';
             }
+            sql = `SELECT p.prod_codigo, p.prod_descricao,
+            p.prod_precoCusto, p.prod_precoVenda, p.prod_dataValidade, 
+            p.prod_qtdEstoque,
+            c.cat_codigo, c.cat_descricao
+            FROM produto p INNER JOIN categoria c ON p.cat_codigo = c.cat_codigo
+            WHERE p.prod_descricao like ?
+            ORDER BY p.prod_descricao               
+            `;
+            parametros = ['%'+termo+'%'];
         }
         const conexao = await conectar();
         const [registros, campos] = await conexao.execute(sql,parametros);
         let listaProdutos = [];
-        for (const registro of registros){*/
-            /*const categoria = new Categoria();
-            let listaC =  categoria.consultar(registro.cat_codigo);
-            const produto = new Produto(registro.prod_codigo, registro.prod_descricao, registro.prod_precoCusto, registro.prod_precoVenda,
-                                        registro.prod_dataValidade, registro.prod_qtdEstoque, listaC[0]);*/
-            /*const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
-            const produto = new Produto(registro.prod_codigo, registro.prod_descricao, registro.prod_precoCusto, registro.prod_precoVenda,
-                                        registro.prod_dataValidade, registro.prod_qtdEstoque, categoria);
+        for (const registro of registros){
+            const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
+            const produto = new Produto(registro.prod_codigo,registro.prod_descricao,
+                                        registro.prod_precoCusto,registro.prod_precoVenda,
+                                        registro.prod_dataValidade, registro.prod_qtdEstoque,
+                                        categoria);
             listaProdutos.push(produto);
         }
-        return listaProdutos;
-    }*/
-
-    async consultar(termo) {
-        if (!termo){
-            termo="";
-        }
-        //termo é um número
-        const conexao = await conectar();
-        let listaProdutos = [];
-        if (!isNaN(Number(termo))){
-            //consulta pelo código do produto
-            const sql = `SELECT p.prod_codigo, p.prod_descricao,
-              p.prod_precoCusto, p.prod_precoVenda, p.prod_dataValidade, 
-              p.prod_qtdEstoque,
-              c.cat_codigo, c.cat_descricao
-              FROM produto p INNER JOIN categoria c ON p.cat_codigo = c.cat_codigo
-              WHERE p.prod_codigo = ?
-              ORDER BY p.prod_descricao               
-            `;
-            const parametros=[termo];
-            const [registros, campos] = await conexao.execute(sql,parametros);
-            for (const registro of registros){
-                const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
-                const produto = new Produto(registro.prod_codigo,registro.prod_descricao,
-                                            registro.prod_precoCusto,registro.prod_precoVenda,
-                                            registro.prod_dataValidade, registro.prod_qtdEstoque,
-                                            categoria);
-                listaProdutos.push(produto);
-            }
-        }
-        else
-        {
-            //consulta pela descrição do produto
-            const sql = `SELECT p.prod_codigo, p.prod_descricao,
-              p.prod_precoCusto, p.prod_precoVenda, p.prod_dataValidade, 
-              p.prod_qtdEstoque,
-              c.cat_codigo, c.cat_descricao
-              FROM produto p INNER JOIN categoria c ON p.cat_codigo = c.cat_codigo
-              WHERE p.prod_descricao like ?
-              ORDER BY p.prod_descricao               
-            `;
-            const parametros=['%'+termo+'%'];
-            const [registros, campos] = await conexao.execute(sql,parametros);
-            for (const registro of registros){
-                const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
-                const produto = new Produto(registro.prod_codigo,registro.prod_descricao,
-                                            registro.prod_precoCusto,registro.prod_precoVenda,
-                                            registro.prod_dataValidade, registro.prod_qtdEstoque,
-                                            categoria);
-                listaProdutos.push(produto);
-            }
-        }
+        global.poolConexoes.releaseConnection(conexao);
         return listaProdutos;
     }
 }

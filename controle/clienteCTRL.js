@@ -123,22 +123,65 @@ export default class ClienteCTRL{
     consultar(requisicao, resposta){
         resposta.type("application/json");
         if(requisicao.method === "GET" && requisicao.is('application/json')){
-            const termo = requisicao.params.termo;
-            if(!termo)
-                termo = "";
-            const cliente = new Cliente();
-            cliente.consultar(termo).then((listaClientes) => {
-                resposta.status(200).json({
-                    listaClientes,
-                    "status":true,
-                    "mensagem":"Cliente consultado com sucesso !"
-                })
-            }).catch((erro) => {
-                resposta.status(500).json({
+            const dados = requisicao.body;
+            const termo = dados.nome;
+            if(termo){
+                const cliente = new Cliente();
+                cliente.consultar(termo).then((listaClientes) => {
+                    resposta.status(200).json({
+                        listaClientes,
+                        "status":true,
+                        "mensagem":"Cliente consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar o cliente: "+erro.message
+                    })
+                });
+            }
+            else{
+                resposta.status(400).json({
                     "status":false,
-                    "mensagem":"Erro ao consultar o cliente: "+erro.message
-                })
-            });
+                    "mensagem":"Por favor informe o nome do Cliente"
+                });
+            }
+        }
+        else
+        if(requisicao.method === "GET"){
+            let termo = requisicao.params.termo;
+            if(!termo){
+                termo = "";
+                const cliente = new Cliente();
+                cliente.consultar(termo).then((listaClientes) => {
+                    resposta.status(200).json({
+                        listaClientes,
+                        "status":true,
+                        "mensagem":"Cliente consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um cliente: "+erro.message
+                    })
+                });
+            }
+            else
+            if(Number(!isNaN(termo))){
+                const cliente = new Cliente();
+                cliente.consultar(termo).then((listaClientes) => {
+                    resposta.status(200).json({
+                        listaClientes,
+                        "status":true,
+                        "mensagem":"Cliente consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um cliente: "+erro.message
+                    })
+                });
+            }
         }
     }
 }
