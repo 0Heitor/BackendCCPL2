@@ -14,7 +14,7 @@ export default class FornecedorDAO{
     }
 
     async atualizar(fornecedor){
-        if(fornecedor instanceof Cliente){
+        if(fornecedor instanceof Fornecedor){
             const sql = "UPDATE fornecedor set forn_nome = ?, forn_cnpj = ?, forn_cidade = ?, forn_uf = ?, forn_endereco = ?, forn_numero = ?, forn_cpf = ?, forn_rg = ?, forn_email = ?, forn_telefone = ? WHERE forn_codigo = ?";
             const parametros = [fornecedor.nome, fornecedor.cnpj, fornecedor.cidade, fornecedor.uf, fornecedor.endereco, fornecedor.numero, fornecedor.cpf, fornecedor.rg, fornecedor.email, fornecedor.telefone, fornecedor.codigo];
             const conexao = await conectar();
