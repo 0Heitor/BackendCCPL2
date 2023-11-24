@@ -12,8 +12,9 @@ export default class ProdutoCTRL{
             const precoVenda = dados.precoVenda;
             const dataValidade = dados.dataValidade;
             const qtdEstoque = dados.qtdEstoque;
-            const categoria = dados.categoria;
-            if(descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && categoria){
+            const cat = dados.categoria;
+            if(descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && cat >=0){
+                const categoria = new Categoria(cat,"");
                 const produto = new Produto(0,descricao,precoCusto,precoVenda,dataValidade,qtdEstoque,categoria);
                 produto.gravar().then(()=>{
                     resposta.status(200).json({
@@ -53,8 +54,9 @@ export default class ProdutoCTRL{
             const precoVenda = dados.precoVenda;
             const dataValidade = dados.dataValidade;
             const qtdEstoque = dados.qtdEstoque;
-            const categoria = dados.categoria;
-            if(codigo && descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && categoria){
+            const cat = dados.categoria;
+            if(codigo && descricao && precoCusto > 0 && precoVenda > 0 && dataValidade && qtdEstoque >=0 && cat >=0){
+                const categoria = new Categoria(cat,"");
                 const produto = new Produto(codigo,descricao,precoCusto,precoVenda,dataValidade,qtdEstoque,categoria);
                 produto.alterar().then(()=>{
                     resposta.status(200).json({

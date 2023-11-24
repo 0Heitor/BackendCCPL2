@@ -25,9 +25,13 @@ export default class CategoriaDAO{
 
     async excluir(categoria){
         if(categoria instanceof Categoria){
-            const sql = "DELETE FROM categoria WHERE cat_codigo = ?";
-            const parametros = [categoria.codigo];
-            const conexao = await conectar();
+            let sql = "DELETE FROM produto WHERE cat_codigo = ?";
+            let parametros = [categoria.codigo];
+            let conexao = await conectar();
+            await conexao.execute(sql, parametros);
+            sql = "DELETE FROM categoria WHERE cat_codigo = ?";
+            parametros = [categoria.codigo];
+            conexao = await conectar();
             await conexao.execute(sql, parametros);
             global.poolConexoes.releaseConnection(conexao);
         }
