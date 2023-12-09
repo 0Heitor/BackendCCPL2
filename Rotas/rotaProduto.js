@@ -5,7 +5,7 @@ const rotaProduto = new Router();
 const controleProduto = new ProdutoCTRL();
 rotaProduto
 .get("/", controleProduto.consultar)
-.get("/:termo", controleProduto.consultar)
+.get("/:termo", controleProduto.consultarID)
 .post("/", controleProduto.gravar)
 .put("/", controleProduto.alterar)
 .patch("/", controleProduto.alterar)

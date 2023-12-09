@@ -77,4 +77,31 @@ export default class ProdutoDAO{
         global.poolConexoes.releaseConnection(conexao);
         return listaProdutos;
     }
+
+    async consultarID(termo){
+        let sql='';
+        let parametros=[];
+        sql = `SELECT p.prod_codigo, p.prod_descricao,
+        p.prod_precoCusto, p.prod_precoVenda, p.prod_dataValidade, 
+        p.prod_qtdEstoque,
+        c.cat_codigo, c.cat_descricao
+        FROM produto p INNER JOIN categoria c ON p.cat_codigo = c.cat_codigo
+        WHERE c.cat_codigo = ?
+        ORDER BY p.prod_descricao               
+        `;
+        parametros = [termo];
+        const conexao = await conectar();
+        const [registros, campos] = await conexao.execute(sql,parametros);
+        let listaProdutos = [];
+        for (const registro of registros){
+            const categoria = new Categoria(registro.cat_codigo,registro.cat_descricao);
+            const produto = new Produto(registro.prod_codigo,registro.prod_descricao,
+                                        registro.prod_precoCusto,registro.prod_precoVenda,
+                                        registro.prod_dataValidade, registro.prod_qtdEstoque,
+                                        categoria);
+            listaProdutos.push(produto);
+        }
+        global.poolConexoes.releaseConnection(conexao);
+        return listaProdutos;
+    }
 }

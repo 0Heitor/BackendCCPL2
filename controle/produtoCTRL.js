@@ -183,4 +183,52 @@ export default class ProdutoCTRL{
             }
         }
     }
+
+    consultarID(requisicao, resposta){
+        resposta.type("application/json");
+        if(requisicao.method === "GET" && requisicao.is('application/json')){
+            const dados = requisicao.body;
+            const termo = dados.descricao;
+            if(termo){
+                const produto = new Produto();
+                produto.consultarID(termo).then((listaProdutos) => {
+                    resposta.status(200).json({
+                        listaProdutos,
+                        "status":true,
+                        "mensagem":"Produto consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um produto: "+erro.message
+                    })
+                });
+            }
+            else{
+                resposta.status(400).json({
+                    "status":false,
+                    "mensagem":"Por favor informe a descricao do produto"
+                });
+            }
+        }
+        else
+        if(requisicao.method === "GET"){
+            let termo = requisicao.params.termo;
+            if(Number(!isNaN(termo))){
+                const produto = new Produto();
+                produto.consultarID(termo).then((listaProdutos) => {
+                    resposta.status(200).json({
+                        listaProdutos,
+                        "status":true,
+                        "mensagem":"Produto consultado com sucesso !"
+                    })
+                }).catch((erro) => {
+                    resposta.status(500).json({
+                        "status":false,
+                        "mensagem":"Erro ao consultar um produto: "+erro.message
+                    })
+                });
+            }
+        }
+    }
 }
